@@ -1,0 +1,41 @@
+module-user-list(onclick='{toAccount}')
+  div.wrap-module.py12.f.fm.flex-between
+    div.wrap-img.f.fm
+      img(src="{opts.content.photoUrl + '?width=320&amp;height=320'}").mr16
+      p {opts.content.name}
+    div.wrap-icon.f.fm
+      img(src='./img/icon/next.svg')
+
+
+  style(scoped, type='less').
+    :scope {
+      display: block;
+      width: 100%;
+      border-bottom: solid 0.6px rgba(0,0,0,0.2);
+      .wrap-module {
+        /*display: block;*/
+        width: 90%;
+        margin: 0 auto;
+        .wrap-img {
+          img {
+            width: 48px;
+            border-radius: 50%;
+          }
+        }
+        .wrap-icon {
+          width: 22px;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.on('mount', function(){
+      
+    });
+
+    this.toAccount = function(){
+      window.location.href = `./#users/${opts.content.uid}`;
+    }

@@ -1,0 +1,69 @@
+module-user-profiles
+  div.wrap-module
+    item-user-profile(each='{item in userProfileContents}' content='{item}')
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-module {
+
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    /*
+    this.on('mount', function(){
+      
+    });
+    */
+
+
+    this.initUpdate = true;
+    this.on('update', function(){
+      if(this.opts.content && this.initUpdate){
+        console.log('module update');
+        var toUid = this.opts.content.uid;
+        this.userProfileContents = [
+          {
+            categoryId: 'hobby',
+            label: '趣味',
+            to: toUid,
+            content: 'こんな趣味',
+          },
+          {
+            categoryId: 'hobby',
+            label: '趣味',
+            to: toUid,
+            content: 'こんな趣味',
+          },
+        ];
+        this.initUpdate = false;
+      }
+    });
+
+
+    // format
+    /*
+    if(opts.content) var toUid = opts.content.uid;
+    this.userProfileContents = [
+      {
+        id: 'hobby',
+        label: '趣味',
+        to: toUid,
+        contents: [
+          'こんな趣味',
+          'こういう趣味'
+        ],
+      },
+      {
+        id: 'hobby',
+        label: '趣味',
+        contents: [
+          'こんな趣味',
+          'こういう趣味'
+        ],
+      },
+    ];
+    */

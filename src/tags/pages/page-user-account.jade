@@ -1,0 +1,49 @@
+page-user-account
+  div.wrap-page
+    module-user-account(content='{user}')
+    module-user-profiles(content='{user}')
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-page {
+        display: block;
+        width: 100%;
+      }
+    }
+
+
+  script.
+
+    var self = this;
+
+    this.on('mount', function(){
+      $('modal-content').addClass('show');
+      $('modal-content').scrollTop(0);
+      
+      // 次の画面遷移時にフェードインを防止
+      riot.enableFadeIn = false;
+
+      if(location.hash != '#mypage'){
+        $(document).on("custom:close", function() {
+          $('modal-content').removeClass('show');
+          self.unmount(true);
+
+          riot.enableReloadContent = false;
+        });
+      }
+    });
+
+    var getUser = async (userId) => {
+      var userDoc = await service.db.collection("users").doc(userId).get();
+      var user = userDoc.data();
+
+      self.user = user;
+      self.update();
+    }
+
+    var userId = opts.content;
+
+    getUser(userId);
+
+
+  

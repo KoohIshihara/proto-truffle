@@ -1,0 +1,34 @@
+module-user-account.f.fc
+  div.wrap-module.py30
+    div.wrap-img.mb20
+      img(src="{opts.content.photoUrl + '?width=320&amp;height=320'}" alt='')
+    p.name {opts.content.name}
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-module {
+        .wrap-img {
+          width: 140px;
+          height: 140px;
+          img {
+            border-radius: 50%;
+          }
+        }
+        .name {
+          font-size: 16px;
+          font-weight: 500;
+          letter-spacing: 1px;
+          text-align: center;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.on('mount', function() {
+      
+    });
+
+    self.update()

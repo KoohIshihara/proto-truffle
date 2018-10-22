@@ -1,0 +1,56 @@
+doctype html
+
+html
+  head
+    meta(charset='utf-8')
+
+    //- for smart phone
+    meta(name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1")
+    meta(name="apple-mobile-web-app-capable" content="yes")
+    meta(name="apple-mobile-web-app-status-bar-style" content="black-translucent")
+    link(type="image/x-icon", rel="shortcut icon", href="./images/favicon.png")
+
+    title Truffle
+    meta(name="description", content="Truffle")
+    meta(name="keywords", content="Truffle")
+
+    //- for facebook
+    meta(property='og:title', content='Truffle')
+    meta(property='og:type', content='website')
+    meta(property='og:description', content='Truffle')
+    meta(property='og:url', content='')
+    meta(property='og:image', content='./images/favicon.png')
+    meta(property='og:site_name', content='Truffle')
+    meta(property='og:email', content='')
+
+    meta(name="twitter:card", content="summary")
+    meta(name="twitter:site", content="@as_kou")
+    meta(name="twitter:creator", content="@as_kou")
+
+    //- meltline.css
+    link(rel='stylesheet', href='./plugins/meltline.css')
+    link(rel='stylesheet', href='./plugins/common.css')
+
+
+    //- riot.js
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/riot/2.3.18/riot+compiler.js')
+
+    //- jquery
+    script(type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js')
+    script(type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.js')
+
+    //- fireabse
+    //script(src="https://www.gstatic.com/firebasejs/5.4.1/firebase.js")
+    script(src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js")
+    script(src="https://www.gstatic.com/firebasejs/4.12.1/firebase-auth.js")
+    script(src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js")
+
+    script(type='text/javascript' src='./scripts/index.js')
+
+
+    //- firerest
+    //script(src='https://cdn.rawgit.com/phi-jp/firerest/f0bf0e7de8fcbc9ef7107115ff2b64f3f9738b7b/firerest.js')
+
+
+  body
+    block content

@@ -1,0 +1,72 @@
+item-user-profile.mb18
+  div.wrap-item
+    div(onclick='{toggle}').wrap-title.f.fm.flex-between
+      div.wrap-label.pb4.f.fm
+        img(src='./img/icon/down.svg').down-icon.mr8
+        p {opts.content.label}
+      div.wrap-add.f.fm
+        img(onclick='{toAddProfile.bind(this, opts.content.uid)}' src='./img/icon/add.svg')
+    div.wrap-profile.pt8
+      p.mr2 {opts.content.content}
+      //p(each='{item in opts.content.contents}').mb2 {item}
+
+
+  style(scoped, type='less').
+    :scope {
+      display: block;
+      .wrap-item {
+        .wrap-title {
+          margin: 0 auto;
+          width: 90%;
+          border-bottom: solid .6px rgba(0,0,0,0.2);
+          .wrap-label {
+            img {
+              width: 18px;
+
+              transform: rotate(0deg);
+              transition: all 0.2s;
+              &.active {
+                transform: rotate(180deg) !important;
+              }
+            }
+          }
+          .wrap-add {
+            img {
+              width: 18px;
+            }
+          }
+        }
+        .wrap-profile {
+          width: 90%;
+          margin: 0 auto;
+          display: none;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.on('mount', function() {
+      
+    });
+
+    this.toggle = function() {
+      console.log('toggle');
+
+      var $root = $(this.root);
+      $root.find('.wrap-profile').slideToggle(200);
+      $root.find('.down-icon').toggleClass('active');
+      
+    }
+
+    // Addボタンの実装中
+    this.toAddProfile = function(uid, e) {
+      e.stopPropagation();
+
+      riot.profileContentToEdit = opts.content;
+      
+      window.location.href = './#edit-profile';
+    }
+

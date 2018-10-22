@@ -1,0 +1,54 @@
+page-edit-profile
+  div.wrap-page
+    textarea(placeholder="Content...", onkeyup="{checkLetPost}")#profileInput.px4.py4
+
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-page {
+        display: block;
+        width: 100%;
+        textarea {
+          width: 100%;
+          height: 400px;
+          padding: 8px;
+          outline: none;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    this.on('mount', function(){
+
+      $('modal-content').addClass('show');
+      $('modal-content').scrollTop(0);
+
+      // 次の画面遷移時にフェードインを防止
+      riot.enableFadeIn = false;
+
+      $(document).on("custom:close", function() {
+        $('modal-content').removeClass('show');
+        self.unmount(true);
+      });
+
+      var textarea = document.getElementById('profileInput');
+      textarea.focus();
+
+      var button = document.getElementById('profileSaveButton');
+      this.checkLetPost = function(e) {
+        var value = e.target.value;
+        if(value == ''){
+          button.classList.remove('cta-active');
+        }else{
+          button.classList.add('cta-active');
+        }
+      }
+
+      self.update();
+
+      riot.enableReloadContent = false;
+
+    });

@@ -1,0 +1,93 @@
+/*@import url('https://fonts.googleapis.com/earlyaccess/notosansjapanese.css');*/
+
+
+h1 {
+  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+}
+
+h2 {
+  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+}
+
+h3 {
+  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+}
+
+p {
+  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+  font-size: 16px;
+}
+
+span {
+  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+}
+
+li {
+  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+}
+
+a {
+  font-family: "Yu Gothic", Noto Sans Japanese, Noto Sans JP , helvetica, arial, 'hiragino kaku gothic pro', meiryo, 'ms pgothic', sans-serif;
+}
+
+textarea {
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:placeholder-shown {
+  font-family: Avenir,"Open Sans","Helvetica Neue",Helvetica,Arial,Verdana,Roboto,"游ゴシック","Yu Gothic","游ゴシック体","YuGothic","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","Meiryo UI","メイリオ",Meiryo,"ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.en {
+  display: block;
+}
+
+.jp {
+  display: none;
+}
+
+.no-top-marker {
+  background-size: 201% !important;
+  background-position: 0% 0% !important;
+}
+
+.no-marker {
+  background-size: 201% !important;
+  background-position: 0% 0% !important;
+}
+
+.no-background {
+  background: rgba(255,255,255,0) !important;
+}
+
+.add-opacity {
+  opacity: 0.0;
+
+  transition-property: all;
+  transition-duration: 400ms;
+  transition-delay: 0s;
+  transition-timing-function: ease;
+}
+
+.not-opacity {
+  opacity: 1 !important;
+}
+
+.not-scroll {
+  overflow: hidden;
+  /*
+  height: 100%;
+  width: 100%;
+  position: fixed;
+  */
+}
+
+@media only screen and (max-width : 600px) {
+  p {
+    font-size: 14px;
+  }
+}
+
+
