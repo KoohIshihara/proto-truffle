@@ -2,7 +2,9 @@ module-user-account.f.fc
   div.wrap-module.py30
     div.wrap-img.mb20
       img(src="{opts.content.photoUrl + '?width=320&amp;height=320'}" alt='')
-    p.name {opts.content.name}
+    p.name.mb26 {opts.content.name}
+    div.wrap-button.mb40.f.fc
+      item-button-write-profile(if="{showButton}" uid="{opts.uid}")
 
   style(scoped, type='less').
     :scope {
@@ -10,8 +12,11 @@ module-user-account.f.fc
         .wrap-img {
           width: 140px;
           height: 140px;
+          border-radius: 50%;
+          overflow: hidden;
           img {
-            border-radius: 50%;
+            height: 100%;
+            object-fit: cover;
           }
         }
         .name {
@@ -26,6 +31,10 @@ module-user-account.f.fc
   script.
 
     var self = this;
+
+    this.showButton = true;
+    
+    if(opts.uid == session.user.uid) this.showButton = false;
 
     this.on('mount', function() {
       

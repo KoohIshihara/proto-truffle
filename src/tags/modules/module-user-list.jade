@@ -1,7 +1,8 @@
 module-user-list(onclick='{toAccount}')
   div.wrap-module.py12.f.fm.flex-between
-    div.wrap-img.f.fm
-      img(src="{opts.content.photoUrl + '?width=320&amp;height=320'}").mr16
+    div.f.fm
+      div.wrap-img.mr16.f.fh
+        img(src="{opts.content.photoUrl + '?width=320&amp;height=320'}")
       p {opts.content.name}
     div.wrap-icon.f.fm
       img(src='./img/icon/next.svg')
@@ -17,9 +18,13 @@ module-user-list(onclick='{toAccount}')
         width: 90%;
         margin: 0 auto;
         .wrap-img {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          overflow: hidden;
           img {
-            width: 48px;
-            border-radius: 50%;
+            height: 100%;
+            object-fit: cover;
           }
         }
         .wrap-icon {

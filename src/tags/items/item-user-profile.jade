@@ -2,13 +2,13 @@ item-user-profile.mb18
   div.wrap-item
     div(onclick='{toggle}').wrap-title.f.fm.flex-between
       div.wrap-label.pb4.f.fm
-        img(src='./img/icon/down.svg').down-icon.mr8
+        img(src='./img/icon/down.svg').down-icon.mr8.active
         p {opts.content.label}
-      div.wrap-add.f.fm
+      //div.wrap-add.f.fm
         img(onclick='{toAddProfile.bind(this, opts.content.uid)}' src='./img/icon/add.svg')
-    div.wrap-profile.pt8
-      p.mr2 {opts.content.content}
-      //p(each='{item in opts.content.contents}').mb2 {item}
+    div.wrap-profile.pt8.px4
+      p(each='{item in contents}').mb2 {item}
+      p(if='{!(contents[0])}').noProfile プロフィールがまだありません。
 
 
   style(scoped, type='less').
@@ -39,7 +39,13 @@ item-user-profile.mb18
         .wrap-profile {
           width: 90%;
           margin: 0 auto;
-          display: none;
+          /*display: none;*/
+          p {
+            color: #2a2a2a;
+          }
+          .noProfile {
+            color: #999;
+          }
         }
       }
     }
@@ -47,9 +53,13 @@ item-user-profile.mb18
   script.
 
     var self = this;
+    this.contents = [];
 
     this.on('mount', function() {
-      
+      if(riot.profileContentToEdit){
+        riot.needUpdateProfile.toggle();
+        riot.profileContentToEdit = undefined;
+      }
     });
 
     this.toggle = function() {
@@ -61,12 +71,91 @@ item-user-profile.mb18
       
     }
 
-    // Addボタンの実装中
     this.toAddProfile = function(uid, e) {
       e.stopPropagation();
 
       riot.profileContentToEdit = opts.content;
+      riot.needUpdateProfile = self;
       
       window.location.href = './#edit-profile';
     }
+
+    // TO DO: show / hideはpublishプロパティによる管理にする
+    async function loadProfiles() {
+
+      /*
+      var categoryId = opts.content.categoryId;
+      var to = opts.content.to; // このページの主のid
+      
+      var allProfiles = await service.db.collection("profiles")
+        .where("categoryId", "==", categoryId)
+        .where("to", "==", to)
+        .orderBy("createdAt", 'desc')
+        .get().then(function(querySnapshot) {
+          var profiles = []
+          querySnapshot.forEach(function(doc) {
+            profiles.push(doc.data())
+            //self.contents.push(doc.data().content);
+          });
+          //self.update();
+          return profiles;
+        });
+
+      // fromの人たちに自分（アカウントページの主）が何らかのプロフィールを書いてあげていなければ表示しない
+      riot.shownProfileContents = [];
+      for(var i=0; i < allProfiles.length; i++){
+        var outPutProfiles = [];
+        var profile = allProfiles[i];
+        var writerId = profile.from; // 描いてくれた人のid
+        var ownerId = profile.to; // 主のid
+        
+        var show = await service.db.collection("profiles")
+          .where("from", "==", ownerId)
+          .where("to", "==", writerId)
+          .get().then(function(querySnapshot) {
+            console.log(querySnapshot);
+            firstDoc = querySnapshot.docs[0];
+            if(firstDoc && firstDoc.exists){
+              return true;
+            }
+          });
+
+        if(show){
+          self.contents.push(profile.content);
+        }
+      } // for
+      */
+
+      var categoryId = opts.content.id;
+      var to = opts.content.to; // このページの主のid
+
+      var profiles = await service.db.collection("profiles")
+        .where("categoryId", "==", categoryId)
+        .where("to", "==", to)
+        .where("publish", "==", true)
+        .orderBy("createdAt", 'desc')
+        .get().then(function(querySnapshot) {
+          var profiles = []
+          querySnapshot.forEach(function(doc) {
+            profiles.push(doc.data().content)
+            //self.contents.push(doc.data().content);
+          });
+          //self.update();
+          return profiles;
+        });
+
+      self.contents = profiles;
+      self.update();
+
+    }
+
+    loadProfiles();
+
+    
+
+
+
+
+
+
 

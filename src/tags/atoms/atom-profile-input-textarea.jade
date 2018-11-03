@@ -1,0 +1,83 @@
+atom-profile-input-textarea
+  div.wrap-atom
+    p.mt12.ml8 {opts.content.label}:
+    textarea(placeholder="{opts.content.label}を入力", onkeyup="{checkLetPost}", data-id='{opts.content.id}', data-label='{opts.content.label}').profile-textarea.px4.py4.ml4
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-atom {
+        border-bottom: solid .6px rgba(0,0,0,0.2);
+        textarea {
+          width: 100%;
+          height: 28px;
+          outline: none;
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+    this.publish;
+
+    var button = document.getElementById('saveButton');
+
+    this.on('mount', function(){
+      
+    })
+
+    this.checkLetPost = function() {
+      riot.toSaveProfiles = [];
+      var letPost = true;
+      var textareas = document.getElementsByClassName('profile-textarea');
+      for(var i=0; i<textareas.length; i++){
+        var textarea = textareas[i];
+        var value = textarea.value;
+        if(value == '') letPost = false;
+        var profileObj = {
+          from : session.user.uid,
+          to : riot.focusedUid,
+          content: value,
+          lebel: textarea.dataset.label,
+          categoryId: textarea.dataset.id,
+          createdAt: new Date(),
+          publish: self.publish,
+        };
+        riot.toSaveProfiles.push(profileObj);
+      }
+
+      if(letPost){
+        button.classList.add('cta-active');
+      }else{
+        button.classList.remove('cta-active');
+      }
+
+      self.update();
+    }
+
+
+    // TO DO: このページでの更新はpublishをtrueにするかfalseにするかの判定をしているところ
+    async function checkPublish() {
+      var letPublish = await service.db.collection("profiles")
+        .where("from", "==", riot.focusedUid)
+        .where("to", "==", session.user.uid)
+        .get().then(function(querySnapshot) {
+          console.log(querySnapshot);
+          firstDoc = querySnapshot.docs[0];
+          if(firstDoc && firstDoc.exists){
+            return true;
+          }
+          if(firstDoc == undefined){
+            return false
+          }
+        });
+
+      if(letPublish){
+        self.publish = true;
+      }else{
+        self.publish = false;
+      }
+    }
+
+    checkPublish();
+

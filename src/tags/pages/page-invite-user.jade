@@ -1,0 +1,64 @@
+page-invite-user
+  div.wrap-page.f.fh
+    div.wrap-box
+      p プロフィールを書いて友達を招待しましょう。
+      div.wrap-img
+        img(src='./img/icon/new-person.svg')
+      div.wrap-textarea.f.fc
+        textarea(placeholder="招待する人の名前を入力", onkeyup="{checkLetPost}")#inviteTextarea
+
+
+
+
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-page {
+        width: 100%;
+        height: 100%;
+        .wrap-box {
+          position: relative;
+          width: 100%;
+          p {
+            width: 100%;
+            position: absolute;
+            top: -40px;
+            text-align: center;
+          }
+          .wrap-img {
+            width: 140px;
+            margin: 0 auto;
+          }
+          .wrap-textarea {
+            textarea {
+              width: 160px;
+              height: 24px;
+              padding: 2px;
+              border-bottom: solid 1px rgba(0,0,0,0.2);
+              text-align: center;
+            }
+          }
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+
+    riot.focusedUid = 'new_person';
+
+    this.on('mount', function(){
+
+    });
+
+    this.checkLetPost = function() {
+      var button = document.getElementById('profileNext');
+      var textarea = document.getElementById('inviteTextarea');
+      if(textarea.value == '') {
+        button.classList.remove('cta-active');
+      }else{
+        riot.nameToInvite = textarea.value;
+        button.classList.add('cta-active');
+      }
+    }

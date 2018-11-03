@@ -1,0 +1,50 @@
+util-footer
+  div.wrap-util.f.fm.flex-around
+    a(each='{item in contents}').wrap-img.f.fm
+      i(onclick='{addHeighlight}' data-link='{item.link}' class='{item.icon}').footer-icon
+
+
+  style(scoped, type='less').
+    :scope {
+      position: fixed;
+      z-index: 101;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      border-top: solid 0.6px rgba(0,0,0,0.2);
+      background: #fff;
+      .wrap-util {
+        width: 100%;
+        height: 100%;
+        .wrap-img {
+          i {
+            font-size: 22px;
+            color: #ddd;
+          }
+        }
+        .active {
+          color: #2a2a2a !important;
+        }
+      }
+    }
+
+  script.
+
+    this.contents = [
+      {icon: 'icon-ionicons_svg_md-list active', link:'user-list'},
+      {icon: 'icon-ionicons_svg_md-person-add-2', link:'invite-user'},
+    ];
+
+    this.addHeighlight = function(e) {
+      
+      var link = './#' + e.target.dataset.link;
+      location.href = link;
+
+      var icons = document.getElementsByClassName('footer-icon');
+      for(var i=0; i<icons.length; i++){
+        icons[i].classList.remove('active');
+      }
+      e.target.classList.add('active');
+
+    }

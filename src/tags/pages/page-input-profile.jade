@@ -1,7 +1,8 @@
-page-user-account
-  div.wrap-page.pb100
-    module-user-account(uid='{userId}' content='{user}')
-    module-user-profiles(uid='{userId}' content='{user}')
+page-input-profile
+  div.wrap-page
+    atom-profile-input-textarea(each='{item in contentsForTextarea}' content='{item}')
+    //textarea(placeholder="Content...", onkeyup="{checkLetPost}")#profileInput.px4.py4
+
 
   style(scoped, type='less').
     :scope {
@@ -11,10 +12,10 @@ page-user-account
       }
     }
 
-
   script.
 
     var self = this;
+    this.contentsForTextarea = riot.contentsForInputProfile;
 
     this.on('mount', function(){
       $('modal-content').addClass('show');
@@ -33,17 +34,3 @@ page-user-account
       }
     });
 
-    var getUser = async (userId) => {
-      var userDoc = await service.db.collection("users").doc(userId).get();
-      var user = userDoc.data();
-
-      self.user = user;
-      self.update();
-    }
-
-    var userId = opts.content;
-    this.userId = userId;
-
-    getUser(userId);
-
-  

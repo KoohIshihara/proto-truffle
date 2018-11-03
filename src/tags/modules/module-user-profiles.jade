@@ -19,26 +19,18 @@ module-user-profiles
     });
     */
 
-
-    this.initUpdate = true;
+    this.initUpdate = true; // 初期化の処理を繰り返さないようにする
     this.on('update', function(){
       if(this.opts.content && this.initUpdate){
         console.log('module update');
         var toUid = this.opts.content.uid;
-        this.userProfileContents = [
-          {
-            categoryId: 'hobby',
-            label: '趣味',
-            to: toUid,
-            content: 'こんな趣味',
-          },
-          {
-            categoryId: 'hobby',
-            label: '趣味',
-            to: toUid,
-            content: 'こんな趣味',
-          },
-        ];
+        var contents = [];
+        for(var i=0; i<profileVars.length; i++){
+          var profileVar = profileVars[i];
+          profileVar.to = toUid;
+          contents.push(profileVar);
+        }
+        this.userProfileContents = contents;
         this.initUpdate = false;
       }
     });

@@ -8,7 +8,6 @@ page-user-list
       .wrap-page {
         /*display: block;*/
         width: 100%;
-        height: 100%;
       }
     }
 
@@ -35,3 +34,11 @@ page-user-list
     }
 
     loadListContents();
+
+
+    service.db.collection("profiles")
+      .where("from", "==", '8fPIj09fMvR73xDetSXS9bzIvUy1')
+      .where("to", "==", 'jG3csYM4U5TZ10tmMpslWx4vW6z2')
+      .get().then(function(querySnapshot) {
+        console.log(querySnapshot);
+      });

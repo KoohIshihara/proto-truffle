@@ -5,16 +5,40 @@ util-header
         img(src='{iconSrc}')
       //a(onclick='{toPost}').wrap-img.f.fh
         img(src='{postSrc}')
+
     div(if="{status == 'back'}").container.f.fm.flex-between
       a(onclick='{toBack}').wrap-img.f.fh
         img(src='{backSrc}')
+
+    div(if="{status == 'next'}").container.f.fm.flex-between
+      div
+      a.mr10.f.fh
+        p(onclick='{toNext}').cta#profileNext 次へ
+
+    div(if="{status == 'complete'}").container.f.fm.flex-between
+      div
+      a.mr10.f.fh
+        p(onclick='{toComplete}').cta-active#profileNext 完了
+
+    div(if="{status == 'back_and_next'}").container.f.fm.flex-between
+      a(onclick='{toBack}').wrap-img.f.fh
+        img(src='{backSrc}')
+      a.mr10.f.fh
+        p(onclick='{toNext}').cta#profileNext 次へ
+
+    div(if="{status == 'back_and_save'}").container.f.fm.flex-between
+      a(onclick='{toBack}').wrap-img.f.fh
+        img(src='{backSrc}')
+      a.mr10.f.fh
+        p(onclick='{toSave}').cta#saveButton 保存
+
     div(if="{status == 'add_profile'}").container.f.fm.flex-between
       a(onclick='{toBack}').wrap-img.f.fh
         img(src='{backSrc}')
       a.mr10.f.fh
         p(onclick='{saveProfile}').cta#profileSaveButton Save
     div.wrap-text
-      p {opts.label}
+      p {label}
 
 
 
@@ -76,6 +100,8 @@ util-header
     var self = this;
 
     this.status = opts.status;
+    this.uid = opts.uid;
+    this.label = opts.label;
 
     console.log(this.status);
     this.on('mount', function(){
@@ -98,9 +124,24 @@ util-header
             from: session.user.uid,
             to: profile.to,
             content: value,
+            createdAt: new Date(),
           };
-          service.db.collection("profiles").set(profileObj);
+          service.db.collection("profiles")
+            .add(profileObj)
+            .then(function(){
+              console.log('saved');
+              window.history.back(-1);
+            });
         }
+
+        // 次への関数を指定
+        this.toNext = riot.toNextFunction;
+        
+        // 保存の関数を指定
+        this.toSave = riot.toSaveFunction;
+
+        // 完了の関数を指定
+        this.toComplete = riot.toCompleteFunction;
 
       } // if('user' in session)
     });

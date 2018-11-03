@@ -1,14 +1,12 @@
-page-test
+page-pre-input-profile
   div.wrap-page
-  h2 test
+    atom-checkbox(each='{item in checkBoxes}' content='{item}')
 
   style(scoped, type='less').
     :scope {
       .wrap-page {
         display: block;
         width: 100%;
-        height: 100%;
-        background: #00FFFF;
       }
     }
 
@@ -19,12 +17,18 @@ page-test
     this.on('mount', function(){
       $('modal-content').addClass('show');
       $('modal-content').scrollTop(0);
-
+      
       // 次の画面遷移時にフェードインを防止
       riot.enableFadeIn = false;
 
-      $(document).on("custom:close", function() {
-        $('modal-content').removeClass('show');
-        self.unmount(true);
-      });
+      if(location.hash != '#mypage'){
+        $(document).on("custom:close", function() {
+          $('modal-content').removeClass('show');
+          self.unmount(true);
+
+          riot.enableReloadContent = false;
+        });
+      }
     });
+
+    this.checkBoxes = profileVars;
