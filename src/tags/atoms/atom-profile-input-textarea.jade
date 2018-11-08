@@ -27,6 +27,8 @@ atom-profile-input-textarea
     })
 
     this.checkLetPost = function() {
+
+      // セーブ予定のプロフィール情報を更新
       riot.toSaveProfiles = [];
       var letPost = true;
       var textareas = document.getElementsByClassName('profile-textarea');
@@ -38,14 +40,15 @@ atom-profile-input-textarea
           from : session.user.uid,
           to : riot.focusedUid,
           content: value,
-          lebel: textarea.dataset.label,
+          label: textarea.dataset.label,
           categoryId: textarea.dataset.id,
           createdAt: new Date(),
-          publish: self.publish,
+          publish: false,//self.publish,
         };
         riot.toSaveProfiles.push(profileObj);
       }
 
+      // Saveボタンのオンオフ
       if(letPost){
         button.classList.add('cta-active');
       }else{
@@ -56,7 +59,7 @@ atom-profile-input-textarea
     }
 
 
-    // TO DO: このページでの更新はpublishをtrueにするかfalseにするかの判定をしているところ
+    // このページでの更新はpublishをtrueにするかfalseにするか
     async function checkPublish() {
       var letPublish = await service.db.collection("profiles")
         .where("from", "==", riot.focusedUid)

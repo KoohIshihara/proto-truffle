@@ -49,7 +49,20 @@ page-invite-user
     riot.focusedUid = 'new_person';
 
     this.on('mount', function(){
+      if(location.hash == '#invite-user-modal'){
+        $('modal-content').addClass('show');
+        $('modal-content').scrollTop(0);
+        
+        // 次の画面遷移時にフェードインを防止
+        riot.enableFadeIn = false;
+      
+        $(document).on("custom:close", function() {
+          $('modal-content').removeClass('show');
+          self.unmount(true);
 
+          riot.enableReloadContent = false;
+        });
+      }
     });
 
     this.checkLetPost = function() {

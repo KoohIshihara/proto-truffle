@@ -1,13 +1,38 @@
 page-user-list
   div.wrap-page
     module-user-list(each='{item in listContents}' content='{item}')
+    div(onclick='{toInviteUser}').wrap-invite-another-user.py12.f.fm.flex-between
+      div.f.fm
+        div.wrap-img.mr16.f.fh
+          img(src='./img/invite-add.png')
+        p 他の人のプロフィールを書いて招待する
+      div.wrap-icon.f.fm
+        img(src='./img/icon/next.svg')
+
 
 
   style(scoped, type='less').
     :scope {
       .wrap-page {
-        /*display: block;*/
         width: 100%;
+        border-bottom: solid 0.6px rgba(0,0,0,0.2);
+        .wrap-invite-another-user {
+          width: 90%;
+          margin: 0 auto;
+          .wrap-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            img {
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+          .wrap-icon {
+            width: 22px;
+          }
+        }
       }
     }
 
@@ -16,12 +41,29 @@ page-user-list
     var self = this;
 
     this.on('mount', function(){
+      if(location.hash == '#user-list-modal'){
+        $('modal-content').addClass('show');
+        $('modal-content').scrollTop(0);
+        
+        // 次の画面遷移時にフェードインを防止
+        riot.enableFadeIn = false;
+      
+        $(document).on("custom:close", function() {
+          $('modal-content').removeClass('show');
+          self.unmount(true);
 
-    });    
+          riot.enableReloadContent = false;
+        });
+      }
+    });
 
     var loadListContents = async () => {
+      $('#loading').fadeIn(400);
+
       var contents = await service.db.collection("users")
-        .get().then(function(querySelectors){
+        .orderBy("lastSignInTime", 'desc')
+        .get()
+        .then(function(querySelectors){
           var users = [];
           querySelectors.forEach(function(doc) {
             users.push(doc.data());
@@ -31,14 +73,13 @@ page-user-list
 
       self.listContents = contents;
       self.update();
+
+      $('#loading').fadeOut(400);
     }
 
     loadListContents();
 
 
-    service.db.collection("profiles")
-      .where("from", "==", '8fPIj09fMvR73xDetSXS9bzIvUy1')
-      .where("to", "==", 'jG3csYM4U5TZ10tmMpslWx4vW6z2')
-      .get().then(function(querySnapshot) {
-        console.log(querySnapshot);
-      });
+    this.toInviteUser = function() {
+      window.location.href = './#invite-user-modal';
+    }

@@ -1,0 +1,59 @@
+page-notification
+  div.wrap-page
+    module-notification-card(each='{item in notifications}' content='{item.data}')
+
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-page {
+        
+
+      }
+    }
+
+  script.
+
+    var self = this;
+    self.notifications = [];
+
+    this.on('mount', function(){
+      
+    });
+
+
+    async function init() {
+      $('#loading').fadeIn(400);
+
+      var notifications = await service.db.collection('notifications')
+        .orderBy("createdAt", 'desc')
+        .where("to", "==", session.user.uid)
+        .get().then(function(querySnapshot) {
+          var notificationArray = [];
+          querySnapshot.forEach(function(doc) {
+            notificationArray.push({
+              data: doc.data(),
+              id: doc.id,
+            })
+          });
+          return notificationArray;
+        });
+
+      self.notifications = notifications;
+      self.update();
+
+      $('#loading').fadeOut(400);
+
+      // 通知を既読にアップデート
+      for(var i=0; i<notifications.length; i++){
+        if(notifications[i].data.read == false){
+          var docId = notifications[i].id;
+          service.db.collection('notifications').doc(docId).update({read: true});
+        }
+      }
+
+      $('.footer-batch').hide();
+
+    } // init()
+
+    init();
+    

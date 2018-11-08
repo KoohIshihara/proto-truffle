@@ -13,6 +13,27 @@ riot.route('/users/*', function(uid) {
   riot.update();
 })
 
+riot.route('/user-list-modal', function() {
+  riot.mount('header', 'util-header', {status: 'back'});
+  riot.mount('modal-content', 'page-user-list');
+  riot.update();
+})
+
+riot.route('/invite-user-modal', function() {
+  riot.toNextFunction = function(){
+    window.location.href = `./#pre-input-profile/new_invitation`;
+  };
+  riot.mount('header', 'util-header', {
+    status: 'back_and_next',
+    label: '招待'
+  });
+  riot.update();
+
+  //riot.mount('header', 'util-header', {status: 'back'});
+  riot.mount('modal-content', 'page-invite-user');
+  riot.update();
+})
+
 
 riot.route('/pre-input-profile/*', function(uid) {
   riot.toNextFunction = function(){
@@ -30,7 +51,6 @@ riot.route('/pre-input-profile/*', function(uid) {
 
 riot.route('/input-profile/*', function(uid) {
   
-  //if(true)
   riot.toSaveFunction = async function(){
 
     if(riot.focusedUid == "new_person"){
@@ -47,29 +67,6 @@ riot.route('/input-profile/*', function(uid) {
         return e;
       })
     }
-
-    //  TO DO: 一括書き込みができるbatchをつかおう
-    riot.savedCounter = 0;
-    $('#loadingForModal').fadeIn(400);
-    for(var i=0; i<riot.toSaveProfiles.length; i++){
-      var profileObj = riot.toSaveProfiles[i];
-      service.db.collection("profiles")
-      .add(profileObj)
-      .then(function(){
-        riot.savedCounter++;
-        if(riot.savedCounter == riot.toSaveProfiles.length){
-          console.log('saveComp');
-          riot.toSaveProfiles = [];
-          riot.savedCounter = 0;
-          $('#loadingForModal').fadeOut(400);
-          if(riot.focusedUid != "new_person"){
-            window.history.go(-2);
-          }else{
-            window.location.href = `./#complete-invitation/${riot.invitationId}`;
-          }
-        }
-      });
-    } // for
 
     // こちらのプロフィールを書いてくれていてpublishされていないprofileを有効にする
     var profileByFromUser = await service.db.collection("profiles")
@@ -92,7 +89,110 @@ riot.route('/input-profile/*', function(uid) {
       service.db.collection("profiles").doc(doc.id).update({publish: true});
     }
 
-    // TO DO: fromからプロフィールを書き込んでもらっていたかどうかによる、いずれかの通知を送る
+    if(profileByFromUser[0]!=undefined){
+      for(var i=0; i<riot.toSaveProfiles.length; i++){
+        riot.toSaveProfiles[i].publish = true;
+      }
+    }
+
+    //  TO DO: 一括書き込みができるbatchをつかおう
+    riot.savedCounter = 0;
+    $('#loadingForModal').fadeIn(400);
+    for(var i=0; i<riot.toSaveProfiles.length; i++){
+      var profileObj = riot.toSaveProfiles[i];
+      service.db.collection("profiles")
+      .add(profileObj)
+      .then(function(){
+        riot.savedCounter++;
+        if(riot.savedCounter == riot.toSaveProfiles.length){
+          console.log('saveComp');
+          riot.toSaveProfiles = [];
+          riot.savedCounter = 0;
+
+          $('#loadingForModal').fadeOut(400);
+
+          if(riot.focusedUid != "new_person"){
+            window.history.go(-2);
+          }else{
+            window.location.href = `./#complete-invitation/${riot.invitationId}`;
+          }
+        }
+      });
+    } // for
+
+
+    var focusedUser = await service.db.collection('users').doc(riot.focusedUid).get();
+    focusedUser = focusedUser.data();
+    
+    var inputedCaterories = [];
+    for(var i=0; i<riot.toSaveProfiles.length; i++){
+      var tmp = {
+        'label': riot.toSaveProfiles[i].label,
+        'categoryId': riot.toSaveProfiles[i].categoryId,
+      }
+      inputedCaterories.push(tmp);
+    }
+
+    
+    // 向こうからのプロフィールで今publishしたものがなかった場合 ＝ 一方的に書いた場合
+    if(profileByFromUser[0]==undefined && riot.focusedUid != "new_person"){
+      
+      var notificationObj = {
+        from: session.user.uid,
+        to: riot.focusedUid,
+        type: 'receive_profile',
+        text: `${session.user.name}があなたのプロフィールを書いてくれました。${session.user.name}のプロフィールを書くと受け取ったプロフィールを確認することができます。`,
+        inputedCaterories: inputedCaterories,
+        href: `./#users/${session.user.uid}`,
+        read: false,
+        createdAt: new Date(),
+      };
+      await service.db.collection('notifications').add(notificationObj);
+
+      // みんなのプロフィールを書いてみようというリコメンドを出す
+      notificationObj = {
+        to: session.user.uid,
+        type: 'recommendation',
+        text: `プロフィールを送信しました。他の人のプロフィールも書いて、あなたのプロフィールも充実させましょう。`,
+        href: `./#user-list-modal`,
+        read: false,
+        createdAt: new Date(),
+      };
+      await service.db.collection('notifications').add(notificationObj);
+
+    }else if(profileByFromUser[0] && riot.focusedUid != "new_person"){
+      // お互いがプロフィールを書いたので公開されました。
+      var notificationObj = {
+        from: session.user.uid,
+        to: riot.focusedUid,
+        type: 'publish_profile',
+        text: `${session.user.name}があなたのプロフィールを書いてくれたので、お互いのプロフィールが反映されました。`,
+        inputedCaterories: inputedCaterories,
+        href: `./#users/${riot.focusedUid}`,
+        read: false,
+        createdAt: new Date(),
+      };
+      await service.db.collection('notifications').add(notificationObj);
+
+      notificationObj = {
+        to: session.user.uid,
+        type: 'publish_profile',
+        text: `プロフィールを書いたのであなたと${focusedUser.name}のプロフィールが反映されました。他の人のプロフィールも書いて、あなたのプロフィールも充実させましょう。`,
+        href: `./#user-list-modal`,
+        read: false,
+        createdAt: new Date(),
+      };
+      await service.db.collection('notifications').add(notificationObj);
+
+
+    }else if(riot.focusedUid != "new_person"){
+
+    }
+
+    riot.mount('footer', 'util-footer');
+    riot.update();
+
+
   }; // toSaveFunction()
 
   riot.mount('header', 'util-header', {
@@ -143,7 +243,22 @@ riot.route('/login', function(tagName) {
 
   setTimeout(function() {
     $('content').addClass('not-opacity');
-    riot.mount('content', 'page-login', {content: 'content'});
+    riot.mount('content', 'page-login', {label: ''});
+    riot.update();
+  }, 400);
+})
+
+riot.route('/loginWithInvitation/*', function(invitationId) {
+  
+  if(riot.enableFadeIn) $('content').removeClass('not-opacity');
+
+  riot.enableFadeIn = true;
+
+  $(document).trigger("custom:close");
+
+  setTimeout(function() {
+    $('content').addClass('not-opacity');
+    riot.mount('content', 'page-login-with-invitation', {content: invitationId});
     riot.update();
   }, 400);
 })
@@ -156,7 +271,7 @@ riot.route('/user-list', function(tagName) {
 
   riot.mount('header', 'util-header', {
     status: 'normal',
-    label: 'リスト'
+    label: 'プロフィールリスト'
   });
   riot.update();
 
@@ -200,6 +315,36 @@ riot.route('/invite-user', function(tagName) {
   riot.enableReloadContent = true;
   
 })
+
+
+riot.route('/notification', function(tagName) {
+
+  if(riot.enableFadeIn) $('content').removeClass('not-opacity');
+
+  riot.enableFadeIn = true;
+
+  riot.toNextFunction = function(){
+    window.location.href = `./#pre-input-profile/new_invitation`;
+  };
+  riot.mount('header', 'util-header', {
+    status: 'normal',
+    label: '通知'
+  });
+  riot.update();
+
+  $(document).trigger("custom:close");
+  
+  //if(riot.enableReloadContent){
+    setTimeout(function() {
+      $('content').addClass('not-opacity');
+      riot.mount('content', 'page-notification', {content: 'content'});
+      riot.update();
+    }, 400);
+  //}
+  riot.enableReloadContent = true;
+  
+})
+
 
 riot.route(function(tagName) {
 

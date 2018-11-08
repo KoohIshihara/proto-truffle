@@ -1,0 +1,61 @@
+module-notification-card
+  a(href='{href}').wrap-module.px14.py16.f.flex-between.flex-wrap
+    div.wrap-img
+      img(src='{iconSrc}')
+    div.wrap-text
+      p.time.mb4 {createdAt}
+      p {text}
+    
+
+  style(scoped, type='less').
+    :scope {
+      .wrap-module {
+        border-bottom: solid .6px rgba(0,0,0,0.2);
+        .wrap-img {
+          width: 40px;
+          height: 40px;
+          overflow: hidden;
+          border-radius: 50%;
+          img {
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+        .wrap-text {
+          width: 86%;
+          .time {
+            color: #999;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+
+  script.
+
+    var self = this;
+    this.from = opts.content.from;
+    this.to = opts.content.to;
+    this.createdAt = moment(opts.content.createdAt).format('ddd DD, YYYY, HH:mm');
+    this.text = opts.content.text;
+    this.href = opts.content.href;
+
+    this.on('mount', function(){
+      
+    });
+
+    async function init() {
+      
+      if(self.from){
+        var fromUser = await service.db.collection('users').doc(self.from).get();
+        fromUser = fromUser.data();
+        self.iconSrc = fromUser.photoUrl;
+      }else{
+        self.iconSrc = './img/no_person_icon.png';
+      }
+      self.update();
+
+    }
+
+    init();
+    
